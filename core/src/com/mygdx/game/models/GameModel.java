@@ -108,7 +108,7 @@ public class GameModel {
         float speed = 200;
 
         Random rand = new Random();
-        float angle = rand.nextFloat(0, 360);
+        float angle = (float) Math.toRadians(rand.nextFloat(0, 360));
         Vector2 enemyVelocity = new Vector2();
 
         enemyVelocity.x = (float) (Math.cos(angle)*speed);

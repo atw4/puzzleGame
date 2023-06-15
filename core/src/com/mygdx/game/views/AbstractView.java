@@ -29,4 +29,12 @@ public abstract class AbstractView {
         sprite.draw(gameManager.batch);
         gameManager.batch.end();
     }
+
+    public void dispose(){
+        texture.dispose();
+    }
+
+    public abstract void update();
+
+    public abstract int getRenderingPriority();
 }

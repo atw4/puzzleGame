@@ -10,9 +10,7 @@ import org.w3c.dom.Text;
 
 
 public class BackgroundView extends AbstractView{
-    Sprite backgroundSprite;
     public BackgroundView(){
-
         texture = new Texture("rainbow.jpg");
         rectangle = new Rectangle();
         rectangle.width = Constants.GAME_WIDTH;
@@ -21,4 +19,16 @@ public class BackgroundView extends AbstractView{
         sprite = AbstractView.getSpriteFromTextureAndRect(texture, rectangle);
         sprite.setOrigin(0.0F, 0.0F);
     }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public int getRenderingPriority() {
+        return 0;
+    }
+
+
 }

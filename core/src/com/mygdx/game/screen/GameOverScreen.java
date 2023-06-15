@@ -32,8 +32,12 @@ import com.mygdx.game.GameManager;
 import com.mygdx.game.constants.Constants;
 import com.mygdx.game.constants.ScreenType;
 
+import org.w3c.dom.Text;
+
 public class GameOverScreen extends AbstractScreen implements Screen {
     private Stage stage;
+    private Texture playUpTexture;
+    private Texture playDownTexture;
     private ImageButton playAgainBtn;
 
     public GameOverScreen(final GameManager gameManager) {
@@ -50,10 +54,10 @@ public class GameOverScreen extends AbstractScreen implements Screen {
     private void createScene(){
         //Create the play again button
         //Add the button
-        Texture playUpTexture = new Texture("button.png");
+        playUpTexture = new Texture("button.png");
         Drawable playUpDrawable = new TextureRegionDrawable(new TextureRegion(playUpTexture));
 
-        Texture playDownTexture = new Texture("button_down.png");
+        playDownTexture = new Texture("button_down.png");
         Drawable playDownDrawable = new TextureRegionDrawable(new TextureRegion(playDownTexture));
 
         playAgainBtn = new ImageButton(playUpDrawable, playDownDrawable);
@@ -116,6 +120,9 @@ public class GameOverScreen extends AbstractScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        playUpTexture.dispose();
+        playUpTexture.dispose();
+
 
     }
 }

@@ -24,11 +24,10 @@ import com.mygdx.game.views.EnemyView;
 import com.mygdx.game.views.HumanView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GameScreen extends AbstractScreen implements Screen {
-	SpriteBatch batch;
-	Texture img;
-
 	Camera camera;
 
 	private GameModel gameModel;
@@ -41,6 +40,9 @@ public class GameScreen extends AbstractScreen implements Screen {
 
 	private BackgroundView backgroundView;
 
+	private ArrayList<AbstractView> views;
+	private ArrayList<AbstractView> renderingViews;
+
 	public GameScreen(GameManager gameManager){
 		super(gameManager, ScreenType.GAME);
 
@@ -52,9 +54,12 @@ public class GameScreen extends AbstractScreen implements Screen {
 
 		this.gameModel = new GameModel();
 
+		//Init the views array
+		views = new ArrayList<AbstractView>();
 
 		//Init human view
 		humanView = new HumanView(this.gameModel.getHuman());
+		views.add(humanView);
 
 		//Init enemeny views
 		enemyViews = new ArrayList<EnemyView>();
@@ -65,11 +70,20 @@ public class GameScreen extends AbstractScreen implements Screen {
 
 			EnemyView enemyView = new EnemyView(enemy);
 			enemyViews.add(enemyView);
+			views.add(enemyView);
 		}
 
 		//Init background view
 		backgroundView = new BackgroundView();
+		views.add(backgroundView);
 
+		renderingViews = (ArrayList<AbstractView>) views.clone();
+		Collections.sort(renderingViews, new Comparator<AbstractView>() {
+			@Override
+			public int compare(AbstractView abstractView, AbstractView t1) {
+				return abstractView.getRenderingPriority() - t1.getRenderingPriority();
+			}
+		});
 	}
 
 
@@ -88,12 +102,10 @@ public class GameScreen extends AbstractScreen implements Screen {
 		}
 
 		//Update all the views, after updating the models
-		for(int i = 0; i < enemyViews.size(); i++){
-			EnemyView view = enemyViews.get(i);
+		for(int i = 0; i < views.size(); i++){
+			AbstractView view = views.get(i);
 			view.update();
 		}
-		humanView.update();
-
 
 		//Clear screen, camera
 		ScreenUtils.clear(0, 0, 0, 1);
@@ -101,12 +113,9 @@ public class GameScreen extends AbstractScreen implements Screen {
 		gameManager.batch.setProjectionMatrix(camera.combined);
 
 		//Render all the views
-		backgroundView.draw(gameManager);
-
-		humanView.draw(gameManager);
-		for(int i = 0; i < enemyViews.size(); i++){
-			EnemyView enemyView = enemyViews.get(i);
-			enemyView.draw(gameManager);
+		for(int i = 0; i < renderingViews.size(); i++){
+			AbstractView view = renderingViews.get(i);
+			view.draw(gameManager);
 		}
 	}
 
@@ -134,7 +143,10 @@ public class GameScreen extends AbstractScreen implements Screen {
 
 	@Override
 	public void dispose () {
-		batch.dispose();
-		img.dispose();
+		for(int i = 0; i < views.size(); i++){
+			AbstractView view = views.get(i);
+			view.dispose();
+		}
+
 	}
 }

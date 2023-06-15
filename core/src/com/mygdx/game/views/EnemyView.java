@@ -19,8 +19,14 @@ public class EnemyView extends AbstractView{
         sprite = AbstractView.getSpriteFromTextureAndRect(texture, rectangle);
     }
 
+    @Override
     public void update() {
         Rectangle enemyRect = enemy.getRectangle();
         sprite.setPosition(enemyRect.x, enemyRect.y);
+    }
+
+    @Override
+    public int getRenderingPriority() {
+        return 1;
     }
 }

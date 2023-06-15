@@ -19,8 +19,14 @@ public class HumanView extends AbstractView{
         sprite = AbstractView.getSpriteFromTextureAndRect(texture, rectangle);
     }
 
+    @Override
     public void update() {
         Rectangle humanRect = human.getRectangle();
         sprite.setPosition(humanRect.x, humanRect.y);
+    }
+
+    @Override
+    public int getRenderingPriority() {
+        return 2;
     }
 }

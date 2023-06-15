@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.constants.ScreenType;
@@ -30,6 +31,10 @@ public class GameManager extends Game {
     }
 
     public void transitionToScreen(ScreenType screenType){
+        Screen screen = this.getScreen();
+        if(screen != null) {
+            screen.dispose();
+        }
 
         switch(screenType){
             case MAIN_MENU:

@@ -17,8 +17,8 @@ public class GameManager extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
         //this.transitionToScreen(ScreenType.MAIN_MENU);
-        //this.transitionToScreen(ScreenType.GAME);
-        this.transitionToScreen(ScreenType.GAME_OVER);
+        this.transitionToScreen(ScreenType.GAME);
+        //this.transitionToScreen(ScreenType.GAME_OVER);
     }
 
     public void render() {

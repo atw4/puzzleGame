@@ -10,6 +10,14 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.GameManager;
@@ -53,6 +61,8 @@ public class GameScreen extends AbstractScreen implements Screen {
 		isGameOver = false;
 
 		this.gameModel = new GameModel();
+		this.gameModel.initFromTileMap();
+
 
 		//Init the views array
 		views = new ArrayList<AbstractView>();

@@ -3,3 +3,5 @@
 /desktop/build/
 /.gradle/
 /.idea/
+/build/
+/tiled_project/puzzle_game.tiled-session

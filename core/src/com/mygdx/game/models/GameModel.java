@@ -1,6 +1,13 @@
 package com.mygdx.game.models;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -22,41 +29,99 @@ public class GameModel {
     private int numOfEnemies = 21;
 
     public GameModel(){
-        this.initModels();
+    }
+
+    public void initTest() {
+        initModels();
+    }
+
+    public void initFromTileMap() {
+        TiledMap map = new TmxMapLoader().load("maps/test_map.tmx");
+        MapProperties mapProp = map.getProperties();
+        int mapWidth = mapProp.get("width", Integer.class);
+        int tileWidth = mapProp.get("tilewidth", Integer.class);
+        int mapHeight = mapProp.get("height", Integer.class);
+        int tileHeight = mapProp.get("tileheight", Integer.class);
+
+        int totalWidth = mapWidth*tileWidth;
+        int totalHeight = mapHeight*tileHeight;
+
+        float scalePosX = (float) Constants.GAME_WIDTH/ (float) totalWidth;
+        float scalePosY = (float) Constants.GAME_HEIGHT/ (float) totalHeight;
+
+        //Init human
+        MapLayer humanLayer = map.getLayers().get("human");
+        MapObject humanObject = (RectangleMapObject) humanLayer.getObjects().get(0);
+        MapProperties humanProp = humanObject.getProperties();
+        int positionX = (int) ((Float)humanProp.get("x")).floatValue();
+        int positionY = (int) ((Float)humanProp.get("y")).floatValue();
+        human = this.initHuman((int) (positionX * scalePosX), (int)(positionY * scalePosY));
+
+
+        //Init enemies
+        enemies = new ArrayList<EnemyModel>();
+        MapLayer enemyLayer = map.getLayers().get("enemies");
+        MapObjects enemyObjects = enemyLayer.getObjects();
+        for(int i = 0; i < enemyObjects.getCount(); i++){
+            MapObject enemyObject = enemyObjects.get(i);
+            MapProperties enemyProp = enemyObject.getProperties();
+
+            int enemyPositionX = (int) ((Float)enemyProp.get("x")).floatValue();
+            int enemyPositionY = (int) ((Float)enemyProp.get("y")).floatValue();
+
+            EnemyModel enemy = this.initEnemy((int) (enemyPositionX * scalePosX), (int)(enemyPositionY * scalePosY));
+            enemies.add(enemy);
+        }
+
     }
 
 
     private void initModels(){
         //init human
-        Rectangle humanRect = new Rectangle();
-        humanRect.x = Constants.GAME_WIDTH/2;
-        humanRect.y = Constants.GAME_HEIGHT/2;
-        humanRect.width = 50;
-        humanRect.height = 50;
-        human = new HumanModel(humanRect);
-
-
+        human = this.initHuman(Constants.GAME_WIDTH/2, Constants.GAME_HEIGHT/2);
 
         //init enemies
         Random rand = new Random();
+        float speed = 200;
 
-        float minSpeed = 200;
-        float maxSpeed = 250;
         enemies = new ArrayList<EnemyModel>();
         for(int i = 0; i < numOfEnemies; i++){
-            Rectangle enemyRectangle = new Rectangle();
-            enemyRectangle.x = rand.nextInt(0, Constants.GAME_WIDTH);
-            enemyRectangle.y = rand.nextInt(0, Constants.GAME_HEIGHT);
-            enemyRectangle.width = 50;
-            enemyRectangle.height = 50;
+            int positionX = rand.nextInt(0, Constants.GAME_WIDTH);
+            int positionY = rand.nextInt(0, Constants.GAME_HEIGHT);
 
-            Vector2 enemyVelocity = new Vector2();
-            enemyVelocity.x = (rand.nextInt(0, 1)*2 - 1) * rand.nextFloat(minSpeed, maxSpeed);
-            enemyVelocity.y = (rand.nextInt(0, 1)*2 - 1) * rand.nextFloat(minSpeed, maxSpeed);
-
-            EnemyModel enemy = new EnemyModel(enemyRectangle, enemyVelocity);
+            EnemyModel enemy = initEnemy(positionX, positionY);
             enemies.add(enemy);
         }
+    }
+
+    private HumanModel initHuman(int positionX, int positionY){
+        Rectangle humanRect = new Rectangle();
+        humanRect.x = positionX;
+        humanRect.y = positionY;
+        humanRect.width = 50;
+        humanRect.height = 50;
+
+        return new HumanModel(humanRect);
+    }
+
+    private EnemyModel initEnemy(int positionX, int positionY){
+        float speed = 200;
+
+        Random rand = new Random();
+        float angle = rand.nextFloat(0, 360);
+        Vector2 enemyVelocity = new Vector2();
+
+        enemyVelocity.x = (float) (Math.cos(angle)*speed);
+        enemyVelocity.y = (float) (Math.sin(angle)*speed);
+
+
+        Rectangle enemyRectangle = new Rectangle();
+        enemyRectangle.x = positionX;
+        enemyRectangle.y = positionY;
+        enemyRectangle.width = 50;
+        enemyRectangle.height = 50;
+
+        return new EnemyModel(enemyRectangle, enemyVelocity);
     }
 
     public void update(float delta){

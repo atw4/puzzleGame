@@ -5,6 +5,7 @@ import com.mygdx.game.GameManager;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.models.GameModel;
 
 
 public abstract class AbstractView {
@@ -14,17 +15,7 @@ public abstract class AbstractView {
     protected Rectangle rectangle;
     protected Sprite sprite;
 
-
-    public static Sprite getSpriteFromTextureAndRect(Texture texture, Rectangle rectangle){
-        Sprite sprite = new Sprite(texture);
-        sprite.setPosition(rectangle.x, rectangle.y);
-        sprite.setScale(rectangle.width/texture.getWidth(), rectangle.height/texture.getHeight());
-        sprite.setOrigin(rectangle.width/2, rectangle.height/2);
-
-        return sprite;
-    }
-
-    public void draw(GameManager gameManager) {
+    public void draw(float delta, GameManager gameManager) {
         gameManager.batch.begin();
         sprite.draw(gameManager.batch);
         gameManager.batch.end();

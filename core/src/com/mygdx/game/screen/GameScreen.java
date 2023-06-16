@@ -29,6 +29,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.views.AbstractView;
 import com.mygdx.game.views.BackgroundView;
 import com.mygdx.game.views.EnemyView;
+import com.mygdx.game.views.GameView;
 import com.mygdx.game.views.HumanView;
 
 import java.util.ArrayList;
@@ -41,15 +42,7 @@ public class GameScreen extends AbstractScreen implements Screen {
 	private GameModel gameModel;
 	private boolean isGameOver;
 
-
-	private HumanView humanView;
-	private ArrayList<EnemyView> enemyViews;
-
-
-	private BackgroundView backgroundView;
-
-	private ArrayList<AbstractView> views;
-	private ArrayList<AbstractView> renderingViews;
+	private GameView gameView;
 
 	public GameScreen(GameManager gameManager){
 		super(gameManager, ScreenType.GAME);
@@ -60,40 +53,13 @@ public class GameScreen extends AbstractScreen implements Screen {
 
 		isGameOver = false;
 
-		this.gameModel = new GameModel();
-		this.gameModel.initFromTileMap();
+		gameModel = new GameModel();
+		gameModel.initFromTileMap();
+
+		gameView = new GameView();
+		gameView.initFromModel(gameModel);
 
 
-		//Init the views array
-		views = new ArrayList<AbstractView>();
-
-		//Init human view
-		humanView = new HumanView(this.gameModel.getHuman());
-		views.add(humanView);
-
-		//Init enemeny views
-		enemyViews = new ArrayList<EnemyView>();
-
-		ArrayList<EnemyModel> enemies = this.gameModel.getEnemies();
-		for(int i = 0; i < enemies.size(); i++){
-			EnemyModel enemy = enemies.get(i);
-
-			EnemyView enemyView = new EnemyView(enemy);
-			enemyViews.add(enemyView);
-			views.add(enemyView);
-		}
-
-		//Init background view
-		backgroundView = new BackgroundView();
-		views.add(backgroundView);
-
-		renderingViews = (ArrayList<AbstractView>) views.clone();
-		Collections.sort(renderingViews, new Comparator<AbstractView>() {
-			@Override
-			public int compare(AbstractView abstractView, AbstractView t1) {
-				return abstractView.getRenderingPriority() - t1.getRenderingPriority();
-			}
-		});
 	}
 
 
@@ -111,11 +77,7 @@ public class GameScreen extends AbstractScreen implements Screen {
 			this.gameManager.transitionToScreen(ScreenType.GAME_OVER);
 		}
 
-		//Update all the views, after updating the models
-		for(int i = 0; i < views.size(); i++){
-			AbstractView view = views.get(i);
-			view.update();
-		}
+		gameView.update(delta);
 
 		//Clear screen, camera
 		ScreenUtils.clear(0, 0, 0, 1);
@@ -123,10 +85,7 @@ public class GameScreen extends AbstractScreen implements Screen {
 		gameManager.batch.setProjectionMatrix(camera.combined);
 
 		//Render all the views
-		for(int i = 0; i < renderingViews.size(); i++){
-			AbstractView view = renderingViews.get(i);
-			view.draw(gameManager);
-		}
+		gameView.draw(delta, gameManager);
 	}
 
 
@@ -153,10 +112,7 @@ public class GameScreen extends AbstractScreen implements Screen {
 
 	@Override
 	public void dispose () {
-		for(int i = 0; i < views.size(); i++){
-			AbstractView view = views.get(i);
-			view.dispose();
-		}
+		gameView.dispose();
 
 	}
 }

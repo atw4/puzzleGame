@@ -86,4 +86,8 @@ public class HumanModel extends AbstractModel {
         this.isDead = isDead;
     }
 
+    public boolean isRunning(){
+        return velocity.x != 0 || velocity.y != 0;
+    }
+
 }

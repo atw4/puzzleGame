@@ -1,11 +1,14 @@
 package com.mygdx.game.views;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.GameManager;
+import com.mygdx.game.helpers.HelperSprite;
 import com.mygdx.game.models.EnemyModel;
+import com.mygdx.game.models.GameModel;
 
 public class EnemyView extends AbstractView{
     private EnemyModel enemy;
@@ -14,9 +17,9 @@ public class EnemyView extends AbstractView{
         enemy = enemyModel;
 
         texture = new Texture("Free/Main Characters/Pink Man/Fall (32x32).png");
-        rectangle = enemy.getRectangle();
+        rectangle = enemyModel.getRectangle();
 
-        sprite = AbstractView.getSpriteFromTextureAndRect(texture, rectangle);
+        sprite = HelperSprite.getSprite(texture, rectangle);
     }
 
     @Override

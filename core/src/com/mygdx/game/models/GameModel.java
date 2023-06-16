@@ -23,19 +23,23 @@ public class GameModel {
     private ArrayList<EnemyModel> enemies;
 
 
-
-    private int gameIndex;
-
+    float totalStep = 0;
     private int numOfEnemies = 21;
 
     public GameModel(){
     }
 
+
+    public float getTotalStep(){
+        return totalStep;
+    }
     public void initTest() {
         initModels();
     }
 
     public void initFromTileMap() {
+        this.totalStep = 0;
+
         TiledMap map = new TmxMapLoader().load("maps/test_map.tmx");
         MapProperties mapProp = map.getProperties();
         int mapWidth = mapProp.get("width", Integer.class);
@@ -125,6 +129,7 @@ public class GameModel {
     }
 
     public void update(float delta){
+        this.totalStep += delta;
 
         human.step(delta);
 

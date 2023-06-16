@@ -10,20 +10,9 @@ import com.mygdx.game.models.GameModel;
 
 public abstract class AbstractView {
 
+    public abstract void draw(float delta, GameManager gameManager);
 
-    protected Texture texture;
-    protected Rectangle rectangle;
-    protected Sprite sprite;
-
-    public void draw(float delta, GameManager gameManager) {
-        gameManager.batch.begin();
-        sprite.draw(gameManager.batch);
-        gameManager.batch.end();
-    }
-
-    public void dispose(){
-        texture.dispose();
-    }
+    public abstract void dispose();
 
     public abstract void update();
 

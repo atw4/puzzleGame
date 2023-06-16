@@ -22,13 +22,19 @@ public class GameModel {
     private HumanModel human;
     private ArrayList<EnemyModel> enemies;
 
-
     float totalStep = 0;
     private int numOfEnemies = 21;
+
+    private TiledMap tiledMap;
+
 
     public GameModel(){
     }
 
+
+    public TiledMap getTiledMap(){
+        return tiledMap;
+    }
 
     public float getTotalStep(){
         return totalStep;
@@ -37,11 +43,12 @@ public class GameModel {
         initModels();
     }
 
-    public void initFromTileMap() {
+    public void initFromTileMap(TiledMap tiledMap) {
+        this.tiledMap = tiledMap;
+
         this.totalStep = 0;
 
-        TiledMap map = new TmxMapLoader().load("maps/test_map.tmx");
-        MapProperties mapProp = map.getProperties();
+        MapProperties mapProp = tiledMap.getProperties();
         int mapWidth = mapProp.get("width", Integer.class);
         int tileWidth = mapProp.get("tilewidth", Integer.class);
         int mapHeight = mapProp.get("height", Integer.class);
@@ -54,7 +61,7 @@ public class GameModel {
         float scalePosY = (float) Constants.GAME_HEIGHT/ (float) totalHeight;
 
         //Init human
-        MapLayer humanLayer = map.getLayers().get("human");
+        MapLayer humanLayer = tiledMap.getLayers().get("human");
         MapObject humanObject = (RectangleMapObject) humanLayer.getObjects().get(0);
         MapProperties humanProp = humanObject.getProperties();
         int positionX = (int) ((Float)humanProp.get("x")).floatValue();
@@ -64,7 +71,7 @@ public class GameModel {
 
         //Init enemies
         enemies = new ArrayList<EnemyModel>();
-        MapLayer enemyLayer = map.getLayers().get("enemies");
+        MapLayer enemyLayer = tiledMap.getLayers().get("enemies");
         MapObjects enemyObjects = enemyLayer.getObjects();
         for(int i = 0; i < enemyObjects.getCount(); i++){
             MapObject enemyObject = enemyObjects.get(i);
@@ -76,7 +83,6 @@ public class GameModel {
             EnemyModel enemy = this.initEnemy((int) (enemyPositionX * scalePosX), (int)(enemyPositionY * scalePosY));
             enemies.add(enemy);
         }
-
     }
 
 

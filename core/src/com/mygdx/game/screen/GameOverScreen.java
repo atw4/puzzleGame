@@ -2,6 +2,7 @@ package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -50,6 +51,7 @@ public class GameOverScreen extends AbstractScreen implements Screen {
 
         this.createScene();
     }
+
 
     private void createScene(){
         //Create the play again button
@@ -125,4 +127,5 @@ public class GameOverScreen extends AbstractScreen implements Screen {
 
 
     }
+
 }

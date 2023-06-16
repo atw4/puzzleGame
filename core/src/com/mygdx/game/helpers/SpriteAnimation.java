@@ -29,8 +29,8 @@ public class SpriteAnimation<T> extends Animation {
     final float[] vertices = new float[8];
     boolean dirty = true;
 
-    SpriteAnimation(float frameDuration, TextureRegion[] walkFrames){
-        super(frameDuration, walkFrames);
+    SpriteAnimation(float frameDuration, T... keyFrames){
+        super(frameDuration, keyFrames);
     }
 
     public void setScale(float scaleX, float scaleY){

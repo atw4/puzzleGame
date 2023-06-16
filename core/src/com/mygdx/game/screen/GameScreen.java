@@ -51,10 +51,15 @@ public class GameScreen extends AbstractScreen implements Screen {
 		camera.position.x = Constants.GAME_WIDTH/2;
 		camera.position.y = Constants.GAME_HEIGHT/2;
 
+		gameManager.setCamera(camera);
+
 		isGameOver = false;
 
+
+		TiledMap map = new TmxMapLoader().load("maps/test_map_2.tmx");
+
 		gameModel = new GameModel();
-		gameModel.initFromTileMap();
+		gameModel.initFromTileMap(map);
 
 		gameView = new GameView();
 		gameView.initFromModel(gameModel);

@@ -13,6 +13,10 @@ import com.mygdx.game.models.GameModel;
 import com.mygdx.game.models.HumanModel;
 
 public class HumanView extends AbstractView{
+
+    private Texture texture;
+    private Sprite sprite;
+
     private HumanModel human;
 
     private Texture runningTexture;
@@ -34,11 +38,11 @@ public class HumanView extends AbstractView{
 
         //Init the default animation
         texture = new Texture("Free/Main Characters/Ninja Frog/Fall (32x32).png");
-        rectangle = human.getRectangle();
 
-        sprite = HelperSprite.getSprite(texture, rectangle);
+        sprite = HelperSprite.getSprite(texture, human.getRectangle());
     }
 
+    @Override
     public void draw(float delta, GameManager gameManager) {
         if(isRunning){
             runningTime += delta;
@@ -47,7 +51,9 @@ public class HumanView extends AbstractView{
             runningAnimation.draw(runningTime, gameManager.batch);
             gameManager.batch.end();
         }else {
-            super.draw(delta, gameManager);
+            gameManager.batch.begin();
+            sprite.draw(gameManager.batch);
+            gameManager.batch.end();
         }
     }
 
@@ -71,8 +77,6 @@ public class HumanView extends AbstractView{
 
     @Override
     public void dispose() {
-        super.dispose();
-
-
+        texture.dispose();
     }
 }

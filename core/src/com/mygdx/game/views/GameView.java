@@ -24,6 +24,7 @@ public class GameView {
     private ArrayList<AbstractView> renderingViews;
 
 
+    private TiledMapView tiledMapView;
 
     public  GameView(){
 
@@ -36,6 +37,10 @@ public class GameView {
 
         //Init the views array
         views = new ArrayList<AbstractView>();
+
+        //Init the tiled map view
+        tiledMapView = new TiledMapView(gameModel.getTiledMap());
+        views.add(tiledMapView);
 
         //Init human view
         humanView = new HumanView(gameModel.getHuman());

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.constants.ScreenType;
@@ -47,5 +48,13 @@ public class GameManager extends Game {
                 this.setScreen(new GameOverScreen(this));
                 break;
         }
+    }
+
+    private Camera camera;
+    public Camera getCamera(){
+        return camera;
+    }
+    public void setCamera(Camera camera){
+        this.camera = camera;
     }
 }

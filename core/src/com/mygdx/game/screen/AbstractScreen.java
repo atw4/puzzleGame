@@ -1,9 +1,7 @@
 package com.mygdx.game.screen;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.mygdx.game.GameManager;
 import com.mygdx.game.constants.ScreenType;
-import com.mygdx.game.models.AbstractModel;
 
 public abstract class AbstractScreen {
 

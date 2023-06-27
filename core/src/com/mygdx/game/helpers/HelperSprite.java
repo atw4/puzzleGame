@@ -11,7 +11,7 @@ public class HelperSprite {
         Sprite sprite = new Sprite(texture);
         sprite.setPosition(rectangle.x, rectangle.y);
         sprite.setScale(rectangle.width/texture.getWidth(), rectangle.height/texture.getHeight());
-        sprite.setOrigin(rectangle.width/2, rectangle.height/2);
+        sprite.setOrigin(0,0);
 
         return sprite;
     }
@@ -36,7 +36,7 @@ public class HelperSprite {
         }
         SpriteAnimation<TextureRegion> animation = new SpriteAnimation<TextureRegion>(frameDuration, walkFrames);
         animation.setScale(rectangle.width/tileWidth, rectangle.height/tileHeight);
-        animation.setOrigin(rectangle.width/2, rectangle.height/2);
+        animation.setOrigin(0,0);
         return animation;
     }
 

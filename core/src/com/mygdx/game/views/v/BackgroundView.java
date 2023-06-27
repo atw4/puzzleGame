@@ -1,15 +1,14 @@
-package com.mygdx.game.views;
+package com.mygdx.game.views.v;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.GameManager;
 import com.mygdx.game.constants.Constants;
 import com.mygdx.game.helpers.HelperSprite;
-import com.mygdx.game.helpers.SpriteAnimation;
-import com.mygdx.game.models.GameModel;
-
-import org.w3c.dom.Text;
+import com.mygdx.game.models.m.CameraModel;
+import com.mygdx.game.views.GameView;
 
 
 public class BackgroundView extends AbstractView{
@@ -18,14 +17,18 @@ public class BackgroundView extends AbstractView{
     private Rectangle rectangle;
     private Sprite sprite;
 
-    public BackgroundView(){
+    private CameraModel cameraModel;
+
+    public BackgroundView(CameraModel cameraModel){
+        this.cameraModel = cameraModel;
+
         texture = new Texture("rainbow.jpg");
         rectangle = new Rectangle();
         rectangle.width = Constants.GAME_WIDTH;
         rectangle.height = Constants.GAME_HEIGHT;
 
         sprite = HelperSprite.getSprite(texture, rectangle);
-        sprite.setOrigin(0.0F, 0.0F);
+        sprite.setOrigin(-sprite.getWidth(), -sprite.getHeight());
     }
 
     @Override
@@ -35,6 +38,8 @@ public class BackgroundView extends AbstractView{
 
     @Override
     public void update() {
+        sprite.setX( cameraModel.getRectangle().x );
+        sprite.setY( cameraModel.getRectangle().y );
     }
 
     @Override

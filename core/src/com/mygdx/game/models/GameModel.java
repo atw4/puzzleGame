@@ -7,20 +7,28 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.constants.Constants;
-import com.mygdx.game.views.AbstractView;
+import com.mygdx.game.constants.Direction;
+import com.mygdx.game.models.m.AbstractModel;
+import com.mygdx.game.models.m.CameraModel;
+import com.mygdx.game.models.m.EnemyModel;
+import com.mygdx.game.models.m.HumanModel;
+import com.mygdx.game.models.m.TiledMapModel;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
 
 public class GameModel {
     private HumanModel human;
     private ArrayList<EnemyModel> enemies;
+    private TiledMapModel tiledMapModel;
+
+    private CameraModel cameraModel;
+
+
 
     float totalStep = 0;
     private int numOfEnemies = 21;
@@ -32,33 +40,15 @@ public class GameModel {
     }
 
 
-    public TiledMap getTiledMap(){
-        return tiledMap;
-    }
-
-    public float getTotalStep(){
-        return totalStep;
-    }
-    public void initTest() {
-        initModels();
-    }
-
     public void initFromTileMap(TiledMap tiledMap) {
         this.tiledMap = tiledMap;
 
         this.totalStep = 0;
 
-        MapProperties mapProp = tiledMap.getProperties();
-        int mapWidth = mapProp.get("width", Integer.class);
-        int tileWidth = mapProp.get("tilewidth", Integer.class);
-        int mapHeight = mapProp.get("height", Integer.class);
-        int tileHeight = mapProp.get("tileheight", Integer.class);
+        cameraModel = new CameraModel(new Rectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT), this);
 
-        int totalWidth = mapWidth*tileWidth;
-        int totalHeight = mapHeight*tileHeight;
-
-        float scalePosX = (float) Constants.GAME_WIDTH/ (float) totalWidth;
-        float scalePosY = (float) Constants.GAME_HEIGHT/ (float) totalHeight;
+        //Init tilemap model
+        tiledMapModel = new TiledMapModel(this.tiledMap);
 
         //Init human
         MapLayer humanLayer = tiledMap.getLayers().get("human");
@@ -66,7 +56,7 @@ public class GameModel {
         MapProperties humanProp = humanObject.getProperties();
         int positionX = (int) ((Float)humanProp.get("x")).floatValue();
         int positionY = (int) ((Float)humanProp.get("y")).floatValue();
-        human = this.initHuman((int) (positionX * scalePosX), (int)(positionY * scalePosY));
+        human = this.initHuman(positionX, positionY);
 
 
         //Init enemies
@@ -80,29 +70,11 @@ public class GameModel {
             int enemyPositionX = (int) ((Float)enemyProp.get("x")).floatValue();
             int enemyPositionY = (int) ((Float)enemyProp.get("y")).floatValue();
 
-            EnemyModel enemy = this.initEnemy((int) (enemyPositionX * scalePosX), (int)(enemyPositionY * scalePosY));
+            EnemyModel enemy = this.initEnemy(enemyPositionX , enemyPositionY);
             enemies.add(enemy);
         }
     }
 
-
-    private void initModels(){
-        //init human
-        human = this.initHuman(Constants.GAME_WIDTH/2, Constants.GAME_HEIGHT/2);
-
-        //init enemies
-        Random rand = new Random();
-        float speed = 200;
-
-        enemies = new ArrayList<EnemyModel>();
-        for(int i = 0; i < numOfEnemies; i++){
-            int positionX = rand.nextInt(0, Constants.GAME_WIDTH);
-            int positionY = rand.nextInt(0, Constants.GAME_HEIGHT);
-
-            EnemyModel enemy = initEnemy(positionX, positionY);
-            enemies.add(enemy);
-        }
-    }
 
     private HumanModel initHuman(int positionX, int positionY){
         Rectangle humanRect = new Rectangle();
@@ -131,13 +103,47 @@ public class GameModel {
         enemyRectangle.width = 50;
         enemyRectangle.height = 50;
 
-        return new EnemyModel(enemyRectangle, enemyVelocity);
+        return new EnemyModel(enemyRectangle, enemyVelocity, this);
     }
 
     public void update(float delta){
         this.totalStep += delta;
 
+        //Update the human movement
+        human.setIsMove(Direction.LEFT, Gdx.input.isKeyPressed(Input.Keys.LEFT));
+        human.setIsMove(Direction.RIGHT, Gdx.input.isKeyPressed(Input.Keys.RIGHT));
+        human.setIsMove(Direction.UP, Gdx.input.isKeyPressed(Input.Keys.UP));
+        human.setIsMove(Direction.DOWN, Gdx.input.isKeyPressed(Input.Keys.DOWN));
+        human.setJump(Gdx.input.isKeyPressed(Input.Keys.SPACE));
+
         human.step(delta);
+        for(Direction dir : Direction.values()){
+            Rectangle collisionRect = tiledMapModel.checkCollision(human, dir);
+
+            human.setIsCollide(dir, collisionRect != null);
+
+            if(collisionRect != null){
+                switch(dir){
+                    case UP:
+                        human.setY(collisionRect.y - human.getHeight());
+                        break;
+                    case DOWN:
+                        human.setY(collisionRect.y + collisionRect.getHeight());
+                        break;
+                    case LEFT:
+                        human.setX(collisionRect.x + collisionRect.getWidth());
+                        break;
+                    case RIGHT:
+                        human.setX(collisionRect.x - human.getWidth());
+                        break;
+                }
+
+
+            }
+        }
+
+
+        cameraModel.step(delta);
 
         if(!human.isDead()){
             for(int i = 0; i < enemies.size(); i++){
@@ -147,18 +153,17 @@ public class GameModel {
             }
         }
 
-        human.setMoveLeft(Gdx.input.isKeyPressed(Input.Keys.LEFT));
-        human.setMoveRight(Gdx.input.isKeyPressed(Input.Keys.RIGHT));
-        human.setMoveUp(Gdx.input.isKeyPressed(Input.Keys.UP));
-        human.setMoveDown(Gdx.input.isKeyPressed(Input.Keys.DOWN));
+
+
 
 
         if(!human.isDead()){
             boolean isCollision = checkCollision(human, enemies);
             if(isCollision){
-                human.setIsDead(true);
+                human.setDead(true);
             }
         }
+
     }
 
     public boolean isGameOver(){
@@ -172,8 +177,18 @@ public class GameModel {
         return enemies;
     }
 
+    public TiledMap getTiledMap(){
+        return tiledMap;
+    }
 
+    public float getTotalStep() {
+        return totalStep;
+    }
+    public TiledMapModel getTiledMapModel() { return tiledMapModel; }
 
+    public CameraModel getCameraModel() {
+        return cameraModel;
+    }
     public boolean checkCollision(AbstractModel checkModel, ArrayList<? extends AbstractModel> otherModels){
         Rectangle checkRect = checkModel.getRectangle();
 

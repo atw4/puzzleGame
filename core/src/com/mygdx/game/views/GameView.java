@@ -1,8 +1,14 @@
 package com.mygdx.game.views;
 
 import com.mygdx.game.GameManager;
-import com.mygdx.game.models.EnemyModel;
+import com.mygdx.game.models.m.EnemyModel;
 import com.mygdx.game.models.GameModel;
+import com.mygdx.game.views.v.AbstractView;
+import com.mygdx.game.views.v.BackgroundView;
+import com.mygdx.game.views.v.CameraView;
+import com.mygdx.game.views.v.EnemyView;
+import com.mygdx.game.views.v.HumanView;
+import com.mygdx.game.views.v.TiledMapView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +32,8 @@ public class GameView {
 
     private TiledMapView tiledMapView;
 
+    private CameraView cameraView;
+
     public  GameView(){
 
     }
@@ -38,8 +46,12 @@ public class GameView {
         //Init the views array
         views = new ArrayList<AbstractView>();
 
+        //Init the camera view
+        cameraView = new CameraView(this.gameModel.getCameraModel());
+        views.add(cameraView);
+
         //Init the tiled map view
-        tiledMapView = new TiledMapView(gameModel.getTiledMap());
+        tiledMapView = new TiledMapView(gameModel.getTiledMap(), gameModel.getTiledMapModel(), cameraView);
         views.add(tiledMapView);
 
         //Init human view
@@ -59,7 +71,7 @@ public class GameView {
         }
 
         //Init background view
-        backgroundView = new BackgroundView();
+        backgroundView = new BackgroundView(gameModel.getCameraModel());
         views.add(backgroundView);
 
         renderingViews = (ArrayList<AbstractView>) views.clone();
@@ -99,4 +111,7 @@ public class GameView {
     }
 
 
+    public CameraView getCameraView() {
+        return cameraView;
+    }
 }

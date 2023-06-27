@@ -1,14 +1,11 @@
-package com.mygdx.game.views;
+package com.mygdx.game.views.v;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.GameManager;
 import com.mygdx.game.helpers.HelperSprite;
-import com.mygdx.game.models.EnemyModel;
-import com.mygdx.game.models.GameModel;
+import com.mygdx.game.models.m.EnemyModel;
 
 public class EnemyView extends AbstractView{
     private Texture texture;
@@ -33,7 +30,7 @@ public class EnemyView extends AbstractView{
 
     @Override
     public int getRenderingPriority() {
-        return 1;
+        return 4;
     }
 
     @Override

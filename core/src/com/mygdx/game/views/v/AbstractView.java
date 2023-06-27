@@ -1,4 +1,4 @@
-package com.mygdx.game.views;
+package com.mygdx.game.views.v;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.GameManager;

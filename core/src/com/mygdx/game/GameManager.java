@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.mygdx.game.constants.Constants;
 import com.mygdx.game.constants.ScreenType;
 import com.mygdx.game.screen.GameOverScreen;
 import com.mygdx.game.screen.GameScreen;
@@ -13,10 +15,15 @@ import com.mygdx.game.screen.MainMenuScreen;
 public class GameManager extends Game {
     public SpriteBatch batch;
     public BitmapFont font;
+    public ShapeRenderer debugRenderer;
 
     public void create(){
         batch = new SpriteBatch();
         font = new BitmapFont();
+
+        if(Constants.DEBUG){
+            debugRenderer = new ShapeRenderer();
+        }
         //this.transitionToScreen(ScreenType.MAIN_MENU);
         this.transitionToScreen(ScreenType.GAME);
         //this.transitionToScreen(ScreenType.GAME_OVER);
@@ -50,11 +57,4 @@ public class GameManager extends Game {
         }
     }
 
-    private Camera camera;
-    public Camera getCamera(){
-        return camera;
-    }
-    public void setCamera(Camera camera){
-        this.camera = camera;
-    }
 }

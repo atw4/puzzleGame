@@ -1,16 +1,16 @@
-package com.mygdx.game.views;
+package com.mygdx.game.views.v;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.GameManager;
+import com.mygdx.game.constants.Constants;
 import com.mygdx.game.helpers.HelperSprite;
 import com.mygdx.game.helpers.SpriteAnimation;
-import com.mygdx.game.models.GameModel;
-import com.mygdx.game.models.HumanModel;
+import com.mygdx.game.models.m.HumanModel;
 
 public class HumanView extends AbstractView{
 
@@ -54,6 +54,17 @@ public class HumanView extends AbstractView{
             gameManager.batch.begin();
             sprite.draw(gameManager.batch);
             gameManager.batch.end();
+        }
+
+
+        if(Constants.DEBUG){
+            gameManager.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+
+            gameManager.debugRenderer.setColor(Color.RED);
+            gameManager.debugRenderer.rect(human.getRectangle().x, human.getRectangle().y, human.getRectangle().width, human.getRectangle().height);
+
+            gameManager.debugRenderer.end();
+
         }
     }
 
